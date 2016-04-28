@@ -22,6 +22,7 @@
  * 100% relocatable.  Any attempt to do so will result in a crash.
  * Please select one of the following when turning on debugging.
  */
+
 #ifdef DEBUG
 
 #if defined(CONFIG_DEBUG_ICEDCC)
@@ -65,7 +66,7 @@
 		.endm
 #else
 		.macro	loadsp,	rb, tmp
-		addruart \rb, \tmp
+            addruart \rb, \tmp
 		.endm
 #endif
 #endif

@@ -349,6 +349,7 @@ void register_irq_proc(unsigned int irq, struct irq_desc *desc)
 		goto out_unlock;
 
 #ifdef CONFIG_SMP
+
 	/* create /proc/irq/<irq>/smp_affinity */
 	proc_create_data("smp_affinity", 0644, desc->dir,
 			 &irq_affinity_proc_fops, (void *)(long)irq);
@@ -415,7 +416,6 @@ void init_irq_proc(void)
 	root_irq_dir = proc_mkdir("irq", NULL);
 	if (!root_irq_dir)
 		return;
-
 	register_default_affinity_proc();
 
 	/*
@@ -424,7 +424,6 @@ void init_irq_proc(void)
 	for_each_irq_desc(irq, desc) {
 		if (!desc)
 			continue;
-
 		register_irq_proc(irq, desc);
 	}
 }

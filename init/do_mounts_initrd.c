@@ -54,7 +54,6 @@ static void __init handle_initrd(void)
 	static char *argv[] = { "linuxrc", NULL, };
 	extern char *envp_init[];
 	int error;
-
 	real_root_dev = new_encode_dev(ROOT_DEV);
 	create_dev("/dev/root.old", Root_RAM0);
 	/* mount initrd on rootfs' /root */

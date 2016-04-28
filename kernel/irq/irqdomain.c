@@ -478,7 +478,6 @@ unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data)
 	irq_hw_number_t hwirq;
 	unsigned int type = IRQ_TYPE_NONE;
 	int virq;
-
 	domain = irq_data->np ? irq_find_host(irq_data->np) : irq_default_domain;
 	if (!domain) {
 		pr_warn("no irq domain found for %s !\n",
@@ -487,14 +486,14 @@ unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data)
 	}
 
 	/* If domain has no translation, then we assume interrupt line */
-	if (domain->ops->xlate == NULL)
+	if (domain->ops->xlate == NULL) {
 		hwirq = irq_data->args[0];
+    }
 	else {
 		if (domain->ops->xlate(domain, irq_data->np, irq_data->args,
 					irq_data->args_count, &hwirq, &type))
 			return 0;
 	}
-
 	if (irq_domain_is_hierarchy(domain)) {
 		/*
 		 * If we've already configured this interrupt,

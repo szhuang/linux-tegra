@@ -64,11 +64,14 @@
  */
 u32 tegra_uart_config[3] = {
 	/* Debug UART initialization required */
-	1,
+	//1,
+    1,
 	/* Debug UART physical address */
-	0,
+	//0,
+    0x70006300,
 	/* Debug UART virtual address */
-	0,
+	//0,
+    0xfe800000
 };
 
 static void __init tegra_init_early(void)

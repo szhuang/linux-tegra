@@ -78,7 +78,7 @@ hexbuf:		.space 16
 #ifndef CONFIG_DEBUG_SEMIHOSTING
 
 ENTRY(printascii)
-		addruart_current r3, r1, r2
+        addruart_current r3, r1, r2
 		b	2f
 1:		waituart r2, r3
 		senduart r1, r3

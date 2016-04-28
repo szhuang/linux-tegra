@@ -66,10 +66,12 @@ void (*arm_pm_idle)(void);
 
 void arch_cpu_idle(void)
 {
-	if (arm_pm_idle)
+	if (arm_pm_idle) {
 		arm_pm_idle();
-	else
-		cpu_do_idle();
+    } else {
+        /* disable the idle for VM */
+		//cpu_do_idle();
+    }
 	local_irq_enable();
 }
 

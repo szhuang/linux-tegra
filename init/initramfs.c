@@ -494,9 +494,9 @@ static char * __init unpack_to_rootfs(char *buf, unsigned long len)
 				message = msg_buf;
 			}
 		} else
-			error("junk in compressed archive");
+			error("junk in compressed archive 1");
 		if (state != Reset)
-			error("junk in compressed archive");
+			error("junk in compressed archive 2");
 		this_header = saved_offset + my_inptr;
 		buf += my_inptr;
 		len -= my_inptr;

@@ -1958,7 +1958,6 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 
 	size_sum = ai->static_size + ai->reserved_size + ai->dyn_size;
 	areas_size = PFN_ALIGN(ai->nr_groups * sizeof(void *));
-
 	areas = memblock_virt_alloc_nopanic(areas_size, 0);
 	if (!areas) {
 		rc = -ENOMEM;
@@ -1974,7 +1973,7 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 		for (i = 0; i < gi->nr_units && cpu == NR_CPUS; i++)
 			cpu = gi->cpu_map[i];
 		BUG_ON(cpu == NR_CPUS);
-
+    
 		/* allocate space for the whole group */
 		ptr = alloc_fn(cpu, gi->nr_units * ai->unit_size, atom_size);
 		if (!ptr) {
@@ -1987,7 +1986,6 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
 
 		base = min(ptr, base);
 	}
-
 	/*
 	 * Copy data and free unused parts.  This should happen after all
 	 * allocations are complete; otherwise, we may end up with
@@ -2228,7 +2226,6 @@ void __init setup_per_cpu_areas(void)
 					 PERCPU_DYNAMIC_RESERVE));
 	struct pcpu_alloc_info *ai;
 	void *fc;
-
 	ai = pcpu_alloc_alloc_info(1, 1);
 	fc = memblock_virt_alloc_from_nopanic(unit_size,
 					      PAGE_SIZE,

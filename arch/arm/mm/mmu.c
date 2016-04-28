@@ -1214,6 +1214,7 @@ static inline void prepare_page_table(void)
 	for ( ; addr < PAGE_OFFSET; addr += PMD_SIZE)
 		pmd_clear(pmd_off_k(addr));
 
+
 	/*
 	 * Find the end of the first block of lowmem.
 	 */
@@ -1226,8 +1227,10 @@ static inline void prepare_page_table(void)
 	 * memory bank, up to the vmalloc region.
 	 */
 	for (addr = __phys_to_virt(end);
-	     addr < VMALLOC_START; addr += PMD_SIZE)
+	     addr < VMALLOC_START; addr += PMD_SIZE) {
 		pmd_clear(pmd_off_k(addr));
+    }
+
 }
 
 #ifdef CONFIG_ARM_LPAE
@@ -1581,12 +1584,9 @@ void __init paging_init(const struct machine_desc *mdesc)
 	tcm_init();
 
 	top_pmd = pmd_off_k(0xffff0000);
-
 	/* allocate the zero page. */
 	zero_page = early_alloc(PAGE_SIZE);
-
 	bootmem_init();
-
 	empty_zero_page = virt_to_page(zero_page);
 	__flush_dcache_page(NULL, empty_zero_page);
 }

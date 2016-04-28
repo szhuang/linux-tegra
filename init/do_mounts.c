@@ -424,12 +424,12 @@ retry:
 		flags |= MS_RDONLY;
 		goto retry;
 	}
-
 	printk("List of all partitions:\n");
 	printk_all_partitions();
 	printk("No filesystem could mount root, tried: ");
-	for (p = fs_names; *p; p += strlen(p)+1)
+	for (p = fs_names; *p; p += strlen(p)+1) {
 		printk(" %s", p);
+    }
 	printk("\n");
 #ifdef CONFIG_BLOCK
 	__bdevname(ROOT_DEV, b);
@@ -535,7 +535,6 @@ void __init mount_root(void)
 #ifdef CONFIG_BLOCK
 	{
 		int err = create_dev("/dev/root", ROOT_DEV);
-
 		if (err < 0)
 			pr_emerg("Failed to create /dev/root: %d\n", err);
 		mount_block_root("/dev/root", root_mountflags);
@@ -549,13 +548,11 @@ void __init mount_root(void)
 void __init prepare_namespace(void)
 {
 	int is_floppy;
-
 	if (root_delay) {
 		printk(KERN_INFO "Waiting %d sec before mounting root device...\n",
 		       root_delay);
 		ssleep(root_delay);
 	}
-
 	/*
 	 * wait for the known devices to complete their probing
 	 *
@@ -566,7 +563,6 @@ void __init prepare_namespace(void)
 	wait_for_device_probe();
 
 	md_run_setup();
-
 	if (saved_root_name[0]) {
 		root_device_name = saved_root_name;
 		if (!strncmp(root_device_name, "mtd", 3) ||
@@ -578,10 +574,8 @@ void __init prepare_namespace(void)
 		if (strncmp(root_device_name, "/dev/", 5) == 0)
 			root_device_name += 5;
 	}
-
 	if (initrd_load())
 		goto out;
-
 	/* wait for any asynchronous scanning to complete */
 	if ((ROOT_DEV == 0) && root_wait) {
 		printk(KERN_INFO "Waiting for root device %s...\n",
@@ -591,12 +585,10 @@ void __init prepare_namespace(void)
 			msleep(100);
 		async_synchronize_full();
 	}
-
 	is_floppy = MAJOR(ROOT_DEV) == FLOPPY_MAJOR;
 
 	if (is_floppy && rd_doload && rd_load_disk(0))
 		ROOT_DEV = Root_RAM0;
-
 	mount_root();
 out:
 	devtmpfs_mount("dev");

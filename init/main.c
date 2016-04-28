@@ -386,7 +386,6 @@ static __initdata DECLARE_COMPLETION(kthreadd_done);
 static noinline void __init_refok rest_init(void)
 {
 	int pid;
-
 	rcu_scheduler_starting();
 	smpboot_thread_init();
 	/*
@@ -417,7 +416,6 @@ static int __init do_early_param(char *param, char *val,
 				 const char *unused, void *arg)
 {
 	const struct obs_kernel_param *p;
-
 	for (p = __setup_start; p < __setup_end; p++) {
 		if ((p->early && parameq(param, p->str)) ||
 		    (strcmp(param, "console") == 0 &&
@@ -443,12 +441,16 @@ void __init parse_early_param(void)
 	static int done __initdata;
 	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
 
+    //static char *tmp = "console=ttyS0,115200n8 console=earlycon debug initcall_debug selinux=0";
+
 	if (done)
 		return;
 
 	/* All fall through to do_early_param. */
 	strlcpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+   // strlcpy(tmp_cmdline, tmp, COMMAND_LINE_SIZE);
 	parse_early_options(tmp_cmdline);
+
 	done = 1;
 }
 
@@ -499,7 +501,8 @@ asmlinkage __visible void __init start_kernel(void)
 	char *command_line;
 	char *after_dashes;
 
-	/*
+
+    /*
 	 * Need to run as early as possible, to initialize the
 	 * lockdep hash:
 	 */
@@ -525,16 +528,16 @@ asmlinkage __visible void __init start_kernel(void)
 	boot_cpu_init();
 	page_address_init();
 	pr_notice("%s", linux_banner);
+
 	setup_arch(&command_line);
+
 	mm_init_cpumask(&init_mm);
 	setup_command_line(command_line);
 	setup_nr_cpu_ids();
 	setup_per_cpu_areas();
 	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
-
 	build_all_zonelists(NULL, NULL);
 	page_alloc_init();
-
 	pr_notice("Kernel command line: %s\n", boot_command_line);
 	parse_early_param();
 	after_dashes = parse_args("Booting kernel",
@@ -609,16 +612,13 @@ asmlinkage __visible void __init start_kernel(void)
 	if (panic_later)
 		panic("Too many boot %s vars at `%s'", panic_later,
 		      panic_param);
-
 	lockdep_info();
-
 	/*
 	 * Need to run this when irqs are enabled, because it wants
 	 * to self-test [hard/soft]-irqs on/off lock inversion bugs
 	 * too:
 	 */
 	locking_selftest();
-
 #ifdef CONFIG_BLK_DEV_INITRD
 	if (initrd_start && !initrd_below_start_ok &&
 	    page_to_pfn(virt_to_page((void *)initrd_start)) < min_low_pfn) {
@@ -648,6 +648,7 @@ asmlinkage __visible void __init start_kernel(void)
 	/* Should be run before the first non-init thread is created */
 	init_espfix_bsp();
 #endif
+
 	thread_info_cache_init();
 	cred_init();
 	fork_init();
@@ -668,19 +669,16 @@ asmlinkage __visible void __init start_kernel(void)
 	delayacct_init();
 
 	check_bugs();
-
 	acpi_subsystem_init();
 	sfi_init_late();
-
 	if (efi_enabled(EFI_RUNTIME_SERVICES)) {
 		efi_late_init();
 		efi_free_boot_services();
 	}
-
 	ftrace_init();
-
 	/* Do the rest non-__init'ed, we're now alive */
 	rest_init();
+
 }
 
 /* Call all constructor functions linked into the kernel. */
@@ -863,8 +861,9 @@ static void __init do_initcalls(void)
 {
 	int level;
 
-	for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++)
+	for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++) {
 		do_initcall_level(level);
+    }
 }
 
 /*
@@ -918,7 +917,6 @@ static int try_to_run_init_process(const char *init_filename)
 	int ret;
 
 	ret = run_init_process(init_filename);
-
 	if (ret && ret != -ENOENT) {
 		pr_err("Starting init: %s exists but couldn't execute it (error %d)\n",
 		       init_filename, ret);
@@ -932,7 +930,6 @@ static noinline void __init kernel_init_freeable(void);
 static int __ref kernel_init(void *unused)
 {
 	int ret;
-
 	kernel_init_freeable();
 	/* need to finish all async __init code before freeing the memory */
 	async_synchronize_full();
@@ -940,9 +937,7 @@ static int __ref kernel_init(void *unused)
 	mark_rodata_ro();
 	system_state = SYSTEM_RUNNING;
 	numa_default_policy();
-
 	flush_delayed_fput();
-
 	if (ramdisk_execute_command) {
 		ret = run_init_process(ramdisk_execute_command);
 		if (!ret)
@@ -950,7 +945,6 @@ static int __ref kernel_init(void *unused)
 		pr_err("Failed to execute %s (error %d)\n",
 		       ramdisk_execute_command, ret);
 	}
-
 	/*
 	 * We try each of these until one succeeds.
 	 *
@@ -964,12 +958,12 @@ static int __ref kernel_init(void *unused)
 		panic("Requested init %s failed (error %d).",
 		      execute_command, ret);
 	}
+    while (1);
 	if (!try_to_run_init_process("/sbin/init") ||
 	    !try_to_run_init_process("/etc/init") ||
 	    !try_to_run_init_process("/bin/init") ||
 	    !try_to_run_init_process("/bin/sh"))
 		return 0;
-
 	panic("No working init found.  Try passing init= option to kernel. "
 	      "See Linux Documentation/init.txt for guidance.");
 }
@@ -994,7 +988,6 @@ static noinline void __init kernel_init_freeable(void)
 	set_cpus_allowed_ptr(current, cpu_all_mask);
 
 	cad_pid = task_pid(current);
-
 	smp_prepare_cpus(setup_max_cpus);
 
 	do_pre_smp_initcalls();
@@ -1004,20 +997,17 @@ static noinline void __init kernel_init_freeable(void)
 	sched_init_smp();
 
 	page_alloc_init_late();
-
 	do_basic_setup();
-
 	/* Open the /dev/console on the rootfs, this should never fail */
-	if (sys_open((const char __user *) "/dev/console", O_RDWR, 0) < 0)
+	if (sys_open((const char __user *) "/dev/console", O_RDWR, 0) < 0) {
 		pr_err("Warning: unable to open an initial console.\n");
-
+    }
 	(void) sys_dup(0);
 	(void) sys_dup(0);
 	/*
 	 * check if there is an early userspace init.  If yes, let it do all
 	 * the work
 	 */
-
 	if (!ramdisk_execute_command)
 		ramdisk_execute_command = "/init";
 
@@ -1025,7 +1015,6 @@ static noinline void __init kernel_init_freeable(void)
 		ramdisk_execute_command = NULL;
 		prepare_namespace();
 	}
-
 	/*
 	 * Ok, we have completed the initial bootup, and
 	 * we're essentially up and running. Get rid of the
@@ -1034,7 +1023,6 @@ static noinline void __init kernel_init_freeable(void)
 	 * rootfs is available now, try loading the public keys
 	 * and default modules
 	 */
-
 	integrity_load_keys();
 	load_default_modules();
 }

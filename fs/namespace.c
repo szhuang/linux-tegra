@@ -2750,7 +2750,9 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns)
 	struct mnt_namespace *new_ns;
 	int ret;
 
+
 	new_ns = kmalloc(sizeof(struct mnt_namespace), GFP_KERNEL);
+
 	if (!new_ns)
 		return ERR_PTR(-ENOMEM);
 	ret = ns_alloc_inum(&new_ns->ns);
@@ -2759,6 +2761,7 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns)
 		return ERR_PTR(ret);
 	}
 	new_ns->ns.ops = &mntns_operations;
+
 	new_ns->seq = atomic64_add_return(1, &mnt_ns_seq);
 	atomic_set(&new_ns->count, 1);
 	new_ns->root = NULL;
@@ -3086,14 +3089,11 @@ static void __init init_mount_tree(void)
 	put_filesystem(type);
 	if (IS_ERR(mnt))
 		panic("Can't create rootfs");
-
 	ns = create_mnt_ns(mnt);
 	if (IS_ERR(ns))
 		panic("Can't allocate initial namespace");
-
 	init_task.nsproxy->mnt_ns = ns;
 	get_mnt_ns(ns);
-
 	root.mnt = mnt;
 	root.dentry = mnt->mnt_root;
 	mnt->mnt_flags |= MNT_LOCKED;

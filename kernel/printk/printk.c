@@ -1858,7 +1858,6 @@ int vprintk_default(const char *fmt, va_list args)
 	}
 #endif
 	r = vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, 0, fmt, args);
-
 	return r;
 }
 EXPORT_SYMBOL_GPL(vprintk_default);
@@ -2612,7 +2611,6 @@ int unregister_console(struct console *console)
 {
         struct console *a, *b;
 	int res;
-
 	pr_info("%sconsole [%s%d] disabled\n",
 		(console->flags & CON_BOOT) ? "boot" : "" ,
 		console->name, console->index);

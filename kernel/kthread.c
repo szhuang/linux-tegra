@@ -502,7 +502,6 @@ EXPORT_SYMBOL(kthread_stop);
 int kthreadd(void *unused)
 {
 	struct task_struct *tsk = current;
-
 	/* Setup a clean context for our children to inherit. */
 	set_task_comm(tsk, "kthreadd");
 	ignore_signals(tsk);
@@ -513,8 +512,9 @@ int kthreadd(void *unused)
 
 	for (;;) {
 		set_current_state(TASK_INTERRUPTIBLE);
-		if (list_empty(&kthread_create_list))
+		if (list_empty(&kthread_create_list)) {
 			schedule();
+        }
 		__set_current_state(TASK_RUNNING);
 
 		spin_lock(&kthread_create_lock);

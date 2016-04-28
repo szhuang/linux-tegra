@@ -215,7 +215,6 @@ static void cpu_idle_loop(void)
 		 * the polling bit set, then setting need_resched is
 		 * guaranteed to cause the cpu to reschedule.
 		 */
-
 		__current_set_polling();
 		tick_nohz_idle_enter();
 
@@ -230,7 +229,6 @@ static void cpu_idle_loop(void)
 				this_cpu_write(cpu_dead_idle, true);
 				arch_cpu_idle_dead();
 			}
-
 			local_irq_disable();
 			arch_cpu_idle_enter();
 
@@ -243,14 +241,13 @@ static void cpu_idle_loop(void)
 			 * know that the IPI is going to arrive right
 			 * away
 			 */
-			if (cpu_idle_force_poll || tick_check_broadcast_expired())
+			if (cpu_idle_force_poll || tick_check_broadcast_expired()) {
 				cpu_idle_poll();
-			else
+            } else {
 				cpuidle_idle_call();
-
+            }
 			arch_cpu_idle_exit();
 		}
-
 		/*
 		 * Since we fell out of the loop above, we know
 		 * TIF_NEED_RESCHED must be set, propagate it into

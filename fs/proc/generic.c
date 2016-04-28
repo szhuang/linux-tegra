@@ -191,11 +191,9 @@ int proc_alloc_inum(unsigned int *inum)
 {
 	unsigned int i;
 	int error;
-
 retry:
 	if (!ida_pre_get(&proc_inum_ida, GFP_KERNEL))
 		return -ENOMEM;
-
 	spin_lock_irq(&proc_inum_lock);
 	error = ida_get_new(&proc_inum_ida, &i);
 	spin_unlock_irq(&proc_inum_lock);
