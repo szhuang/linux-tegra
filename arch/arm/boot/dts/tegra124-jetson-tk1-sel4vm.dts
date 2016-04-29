@@ -1381,7 +1381,7 @@
 
 	/* Expansion GEN1_I2C_*, mini-PCIe I2C, on-board components */
 	i2c@0,7000c000 {
-		status = "disabled";
+		status = "okay";
 		clock-frequency = <100000>;
 
 		rt5639: audio-codec@1c {
@@ -1428,7 +1428,7 @@
 
 	/* Expansion PWR_I2C_*, on-board components */
 	i2c@0,7000d000 {
-		status = "disabled";
+		status = "okay";
 		clock-frequency = <400000>;
 
 		pmic: pmic@40 {
@@ -1624,7 +1624,7 @@
 
 	/* Internal SPI */
 	spi@0,7000da00 {
-		status = "disabled";
+		status = "okay";
 		spi-max-frequency = <25000000>;
 		spi-flash@0 {
 			compatible = "winbond,w25q32dw";
@@ -1705,7 +1705,7 @@
 
 	/* eMMC */
 	sdhci@0,700b0600 {
-		status = "disabled";
+		status = "okay";
 		bus-width = <8>;
 		non-removable;
 	};
@@ -1725,20 +1725,20 @@
 
 	/* mini-PCIe USB */
 	usb@0,7d004000 {
-		status = "disabled";
+		status = "okay";
 	};
 
 	usb-phy@0,7d004000 {
-		status = "disabled";
+		status = "okay";
 	};
 
 	/* USB A connector */
 	usb@0,7d008000 {
-		status = "disabled";
+		status = "okay";
 	};
 
 	usb-phy@0,7d008000 {
-		status = "disabled";
+		status = "okay";
 		vbus-supply = <&vdd_usb3_vbus>;
 	};
 
@@ -1912,6 +1912,29 @@
 			enable-active-high;
 			vin-supply = <&vdd_mux>;
 		};
+	};
+
+
+	sound {
+		compatible = "nvidia,tegra-audio-rt5640-jetson-tk1",
+			     "nvidia,tegra-audio-rt5640";
+		nvidia,model = "NVIDIA Tegra Jetson TK1";
+
+		nvidia,audio-routing =
+			"Headphones", "HPOR",
+			"Headphones", "HPOL",
+			"Mic Jack", "MICBIAS1",
+			"IN2P", "Mic Jack";
+
+		nvidia,i2s-controller = <&tegra_i2s1>;
+		nvidia,audio-codec = <&rt5639>;
+
+		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(R, 7) GPIO_ACTIVE_LOW>;
+
+		clocks = <&tegra_car TEGRA124_CLK_PLL_A>,
+			 <&tegra_car TEGRA124_CLK_PLL_A_OUT0>,
+			 <&tegra_car TEGRA124_CLK_EXTERN1>;
+		clock-names = "pll_a", "pll_a_out0", "mclk";
 	};
 
 };
