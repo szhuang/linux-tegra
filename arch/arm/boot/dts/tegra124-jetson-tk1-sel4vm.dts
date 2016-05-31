@@ -21,7 +21,8 @@
 	};
 
 	memory {
-        reg = <0x0 0x80000000 0x0 0x2000000>;
+        /*reg = <0x0 0xb0000000 0x0 0x10000000>; */
+        reg = < 0x0 0x80000000 0x0 0x40000000>;
 	};
 
 	pcie-controller@0,01003000 {
@@ -41,6 +42,21 @@
 
 		pci@2,0 {
 			status = "okay";
+		};
+	};
+
+
+	host1x@0,50000000 {
+		hdmi@0,54280000 {
+			status = "okay";
+
+			hdmi-supply = <&vdd_5v0_hdmi>;
+			pll-supply = <&vdd_hdmi_pll>;
+			vdd-supply = <&vdd_3v3_hdmi>;
+
+			nvidia,ddc-i2c-bus = <&hdmi_ddc>;
+			nvidia,hpd-gpio =
+				<&gpio TEGRA_GPIO(N, 7) GPIO_ACTIVE_HIGH>;
 		};
 	};
 
@@ -1350,20 +1366,6 @@
 		};
 	};
 
-	host1x@0,50000000 {
-		hdmi@0,54280000 {
-			status = "okay";
-
-			hdmi-supply = <&vdd_5v0_hdmi>;
-			pll-supply = <&vdd_hdmi_pll>;
-			vdd-supply = <&vdd_3v3_hdmi>;
-
-			nvidia,ddc-i2c-bus = <&hdmi_ddc>;
-			nvidia,hpd-gpio =
-				<&gpio TEGRA_GPIO(N, 7) GPIO_ACTIVE_HIGH>;
-		};
-	};
-
 	/* DB9 serial port */
 	serial@0,70006300 {	
         compatible = "nvidia,tegra124-uart", "nvidia,tegra20-uart";
@@ -1712,7 +1714,7 @@
 
 	/* CPU DFLL clock */
 	clock@0,70110000 {
-		status = "disabled";
+		status = "okay";
 		vdd-cpu-supply = <&vdd_cpu>;
 		nvidia,i2c-fs-rate = <400000>;
 	};
